@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>WordMaster - Học Từ Vựng B2-C1</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="game-container">
+    
+    <!-- HEADER -->
+    <header class="game-header">
+        <h1 class="game-title">🎮 WORD<span class="highlight">MASTER</span></h1>
+        <div class="game-mode-badge" id="current-mode">🔤 CHẾ ĐỘ: ĐOÁN TỪ</div>
+    </header>
+
+    <!-- MAIN MENU -->
+    <div id="main-menu" class="menu-section active">
+        <h2 class="section-title">SELECT GAME MODE</h2>
+        
+        <div class="mode-grid">
+            <div class="mode-card" onclick="Game.startMode('guess')">
+                <div class="mode-icon">📖</div>
+                <h3>GUESS MODE</h3>
+                <p>Wordle style - Guess the word with letter hints!</p>
+                <div class="mode-features">
+                    <span>⏱️ 30s</span>
+                    <span>🔤 First letter</span>
+                    <span>🎯 Wordle style</span>
+                </div>
+            </div>
+
+            <div class="mode-card" onclick="Game.startMode('chain')">
+                <div class="mode-icon">🔗</div>
+                <h3>CHAIN MODE</h3>
+                <p>Connect words - Must be valid English words</p>
+                <div class="mode-features">
+                    <span>⏱️ 25s</span>
+                    <span>📖 Cambridge</span>
+                    <span>🔄 No repeats</span>
+                </div>
+            </div>
+
+            <div class="mode-card" onclick="Game.startMode('scramble')">
+                <div class="mode-icon">🔄</div>
+                <h3>SCRAMBLE MODE</h3>
+                <p>Unscramble the letters to form the correct word</p>
+                <div class="mode-features">
+                    <span>⏱️ 40s</span>
+                    <span>🔀 Unscramble</span>
+                    <span>💡 Hint available</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RANKING PANEL -->
+        <div class="rank-panel">
+            <h3>🏆 TOP PLAYERS</h3>
+            <div class="rank-list" id="rank-list">
+                <div class="rank-item">🏆 No scores yet</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME AREA -->
+    <div id="game-area" class="game-section hidden">
+        
+        <!-- GAME INFO -->
+        <div class="game-info-bar">
+            <div class="info-item">
+                <span class="info-label">SCORE</span>
+                <span class="info-value" id="score-display">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">COMBO</span>
+                <span class="info-value" id="combo-display">0</span>
+            </div>
+            <div class="info-item timer" id="timer-display">
+                <span class="info-label">⏱️ TIME</span>
+                <span class="info-value" id="timer-value">30</span>
+            </div>
+        </div>
+
+        <!-- QUESTION AREA -->
+        <div class="question-area">
+            <div class="hint-box" id="hint-text">
+                Hint will appear here
+            </div>
+            
+            <div class="word-display" id="word-display">
+                _ _ _ _ _ _
+            </div>
+
+            <div class="category-badge" id="category-display">
+                📚 Category
+            </div>
+        </div>
+
+        <!-- INPUT AREA -->
+        <div class="input-area">
+            <input type="text" 
+                   id="user-input" 
+                   class="game-input" 
+                   placeholder="Type your answer..."
+                   maxlength="50"
+                   autocomplete="off">
+            
+            <div class="action-buttons">
+                <button class="btn btn-skip" onclick="Game.skip()">⏭️ SKIP</button>
+                <button class="btn btn-submit" onclick="Game.submit()">✅ SUBMIT</button>
+            </div>
+        </div>
+
+        <button class="btn-back" onclick="Game.backToMenu()">← BACK TO MENU</button>
+    </div>
+
+    <!-- GAME OVER MODAL -->
+    <div id="game-over-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎉 GAME OVER!</h2>
+            <div class="final-score" id="final-score">0</div>
+            <div class="final-stats" id="final-stats"></div>
+            <button class="btn-play-again" onclick="Game.playAgain()">PLAY AGAIN</button>
+            <button class="btn-menu" onclick="Game.backToMenu()">BACK TO MENU</button>
+        </div>
+    </div>
+</div>
+
+<script src="sounds.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
