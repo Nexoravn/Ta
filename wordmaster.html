@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>WordMaster – Học Từ Vựng B2-C1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --bg2: #0f1623;
+  --bg3: #161e2e;
+  --panel: #1a2236;
+  --border: #2a3651;
+  --accent: #4fffb0;
+  --accent2: #00cfff;
+  --accent3: #ff6b6b;
+  --gold: #ffd166;
+  --text: #e8f0ff;
+  --muted: #6b7fa3;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --r: 16px;
+  --r2: 24px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding: 20px 16px 60px;
+  overflow-x: hidden;
+}
+
+/* NOISE OVERLAY */
+body::before {
+  content:'';position:fixed;inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.5;
+}
+
+/* BACKGROUND GLOW */
+body::after {
+  content:'';position:fixed;
+  width:600px;height:600px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(79,255,176,0.06) 0%, transparent 70%);
+  top:10%;left:50%;transform:translateX(-50%);
+  pointer-events:none;z-index:0;
+}
+
+#app {
+  width:100%;max-width:820px;
+  position:relative;z-index:1;
+}
+
+/* ===================== HEADER ===================== */
+.hdr {
+  display:flex;align-items:center;justify-content:space-between;
+  padding: 20px 0 28px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.logo {
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height:1;
+}
+.logo span {
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hdr-right {
+  display:flex;gap:10px;align-items:center;
+}
+.pill-btn {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-family: var(--font-head);
+  font-weight:600;
+  cursor:pointer;
+  transition: all 0.2s;
+}
+.pill-btn:hover, .pill-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(79,255,176,0.08);
+}
+.sound-btn {
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);background:var(--panel);
+  color:var(--muted);cursor:pointer;font-size:1rem;
+  transition:all 0.2s;
+}
+.sound-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+/* ===================== STATS BAR ===================== */
+.stats-bar {
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:28px;
+}
+.stat-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(79,255,176,0.03),transparent);
+  pointer-events:none;
+}
+.stat-label{font-size:0.72rem;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;}
+.stat-val{font-family:var(--font-mono);font-size:1.6rem;font-weight:500;color:var(--text);}
+.stat-val.green{color:var(--accent);}
+.stat-val.blue{color:var(--accent2);}
+.stat-val.gold{color:var(--gold);}
+.stat-val.red{color:var(--accent3);}
+
+/* ===================== SCREENS ===================== */
+.screen{display:none;}
+.screen.active{display:block;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===================== MENU ===================== */
+.menu-headline {
+  font-family:var(--font-head);
+  font-size:2.6rem;font-weight:800;
+  line-height:1.1;margin-bottom:8px;letter-spacing:-1px;
+}
+.menu-sub{color:var(--muted);font-size:1rem;margin-bottom:36px;}
+
+.mode-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;margin-bottom:36px;
+}
+.mode-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:28px 22px;
+  cursor:pointer;
+  transition:all 0.25s;
+  position:relative;overflow:hidden;
+}
+.mode-card::after{
+  content:'';position:absolute;
+  bottom:-40px;right:-40px;
+  width:100px;height:100px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(79,255,176,0.12),transparent);
+  transition:all 0.4s;
+}
+.mode-card:hover{
+  border-color:var(--accent);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(79,255,176,0.12);
+}
+.mode-card:hover::after{bottom:-20px;right:-20px;}
+.mode-icon{font-size:2.2rem;margin-bottom:14px;display:block;}
+.mode-title{
+  font-family:var(--font-head);
+  font-size:1.15rem;font-weight:700;
+  margin-bottom:6px;letter-spacing:-0.3px;
+}
+.mode-desc{font-size:0.85rem;color:var(--muted);line-height:1.5;margin-bottom:14px;}
+.mode-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{
+  font-size:0.72rem;font-weight:600;
+  padding:3px 10px;border-radius:100px;
+  background:rgba(79,255,176,0.1);
+  color:var(--accent);border:1px solid rgba(79,255,176,0.2);
+  font-family:var(--font-head);
+}
+
+/* FLASHCARD special card */
+.mode-card.flash::after{background:radial-gradient(circle,rgba(0,207,255,0.12),transparent);}
+.mode-card.flash:hover{border-color:var(--accent2);box-shadow:0 12px 40px rgba(0,207,255,0.12);}
+.mode-card.flash .tag{background:rgba(0,207,255,0.1);color:var(--accent2);border-color:rgba(0,207,255,0.2);}
+
+/* LEADERBOARD */
+.lb-section{background:var(--panel);border:1px solid var(--border);border-radius:var(--r2);padding:24px;}
+.lb-title{font-family:var(--font-head);font-size:1rem;font-weight:700;color:var(--muted);margin-bottom:18px;letter-spacing:0.05em;}
+.lb-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:var(--r);
+  margin-bottom:6px;
+  transition:background 0.2s;
+}
+.lb-row:hover{background:rgba(255,255,255,0.03);}
+.lb-rank{font-family:var(--font-mono);font-size:0.85rem;color:var(--muted);width:26px;}
+.lb-name{flex:1;font-weight:500;font-size:0.9rem;}
+.lb-mode{font-size:0.75rem;color:var(--muted);margin-right:8px;}
+.lb-score{font-family:var(--font-mono);font-weight:500;color:var(--accent);font-size:1rem;}
+
+/* ===================== GAME AREA ===================== */
+.game-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;gap:12px;
+}
+.mode-badge{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-head);font-size:0.82rem;font-weight:700;
+  padding:8px 16px;border-radius:100px;
+  background:var(--panel);border:1px solid var(--border);
+  color:var(--muted);
+}
+.back-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:100px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-size:0.82rem;font-weight:600;
+  cursor:pointer;transition:all 0.2s;font-family:var(--font-head);
+}
+.back-btn:hover{border-color:var(--text);color:var(--text);}
+
+.game-info {
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:12px;margin-bottom:20px;
+}
+.gi-item{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px 14px;text-align:center;
+}
+.gi-label{font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:3px;}
+.gi-val{font-family:var(--font-mono);font-size:1.5rem;font-weight:500;}
+.gi-val.timer{color:var(--gold);}
+.gi-val.score{color:var(--accent);}
+.gi-val.combo{color:var(--accent2);}
+
+/* timer urgency */
+.gi-val.timer.urgent{color:var(--accent3);animation:pulse 0.5s ease infinite alternate;}
+@keyframes pulse{from{opacity:1}to{opacity:0.5}}
+
+/* GUIDE BOX */
+.guide-box{
+  background:rgba(79,255,176,0.05);
+  border:1px solid rgba(79,255,176,0.2);
+  border-radius:var(--r);padding:14px 18px;
+  font-size:0.85rem;color:var(--text);line-height:1.6;
+  margin-bottom:20px;
+}
+.guide-box strong{color:var(--accent);}
+
+/* QUESTION PANEL */
+.q-panel{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r2);padding:28px 24px;
+  margin-bottom:20px;text-align:center;
+}
+.cat-chip{
+  display:inline-block;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.06em;
+  padding:4px 12px;border-radius:100px;
+  background:rgba(0,207,255,0.1);color:var(--accent2);
+  border:1px solid rgba(0,207,255,0.2);
+  margin-bottom:16px;font-family:var(--font-head);
+}
+.hint-text{
+  font-size:1.05rem;line-height:1.6;color:var(--text);
+  margin-bottom:20px;
+}
+.first-letter-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 20px;border-radius:100px;
+  background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.25);
+  font-size:0.9rem;color:var(--muted);margin-bottom:16px;
+}
+.first-letter-badge .fl{
+  font-family:var(--font-mono);font-size:1.6rem;font-weight:500;color:var(--accent);
+}
+
+/* WORDLE GRID */
+.wordle-grid{display:flex;flex-direction:column;align-items:center;gap:6px;margin:16px 0;}
+.wordle-row{display:flex;gap:6px;}
+.wc{
+  width:52px;height:52px;
+  background:var(--bg2);border:2px solid var(--border);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;font-weight:700;font-family:var(--font-mono);
+  text-transform:uppercase;transition:all 0.25s;
+}
+.wc.correct{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+.wc.present{background:var(--gold);border-color:var(--gold);color:var(--bg);}
+.wc.absent{background:var(--bg3);border-color:var(--bg3);color:var(--muted);}
+.wc.filled{animation:popIn 0.15s ease;}
+@keyframes popIn{0%{transform:scale(0.75)}100%{transform:scale(1)}}
+.wc.flip{animation:flip 0.4s ease;}
+@keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+
+/* SCRAMBLE */
+.scramble-tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:16px 0;}
+.s-tile{
+  width:54px;height:54px;background:var(--bg2);
+  border:2px solid var(--accent);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;font-weight:700;font-family:var(--font-mono);
+  color:var(--accent);cursor:pointer;
+  transition:all 0.2s;text-transform:uppercase;
+}
+.s-tile:hover{background:var(--accent);color:var(--bg);transform:translateY(-3px);}
+
+/* CHAIN */
+.chain-display{
+  background:var(--bg2);border-radius:var(--r);
+  padding:14px 16px;margin:10px 0;
+  font-size:0.9rem;line-height:1.7;color:var(--muted);
+}
+.chain-display .chain-word{color:var(--accent2);font-weight:600;font-family:var(--font-mono);}
+.chain-display .chain-arrow{color:var(--border);}
+.chain-req{
+  font-size:1rem;color:var(--text);margin-top:12px;
+}
+.chain-req .req-letter{
+  font-family:var(--font-mono);font-size:1.8rem;color:var(--gold);
+  display:inline-block;padding:0 4px;
+}
+
+/* INPUT AREA */
+.input-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:16px;}
+.game-input{
+  width:100%;padding:18px 20px;
+  background:var(--bg2);
+  border:2px solid var(--border);
+  border-radius:var(--r2);
+  color:var(--text);font-size:1.3rem;font-family:var(--font-mono);
+  text-align:center;text-transform:uppercase;
+  transition:all 0.25s;font-weight:500;
+  letter-spacing:0.1em;
+}
+.game-input:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 4px rgba(79,255,176,0.1);
+  background:var(--bg3);
+}
+.game-input::placeholder{font-size:0.9rem;text-transform:none;letter-spacing:0;color:var(--muted);}
+.game-input.shake{animation:shake 0.4s ease;border-color:var(--accent3)!important;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+.btn-row{display:grid;grid-template-columns:1fr 2fr;gap:12px;}
+.btn{
+  padding:16px;border-radius:var(--r2);
+  font-family:var(--font-head);font-size:0.9rem;font-weight:700;
+  cursor:pointer;transition:all 0.2s;border:none;letter-spacing:0.02em;
+}
+.btn-skip{background:var(--panel);color:var(--muted);border:1px solid var(--border);}
+.btn-skip:hover{border-color:var(--accent3);color:var(--accent3);}
+.btn-submit{background:var(--accent);color:var(--bg);}
+.btn-submit:hover{background:#3ae89a;transform:scale(1.02);}
+.btn-hint{
+  background:rgba(255,209,102,0.1);color:var(--gold);
+  border:1px solid rgba(255,209,102,0.3);
+  padding:10px 18px;font-size:0.82rem;
+  font-family:var(--font-head);font-weight:700;
+  border-radius:100px;cursor:pointer;transition:all 0.2s;
+}
+.btn-hint:hover{background:rgba(255,209,102,0.2);}
+.btn-hint:disabled{opacity:0.35;cursor:not-allowed;}
+
+/* ===================== FLASHCARD MODE ===================== */
+.flashcard-wrap{perspective:1000px;margin:20px 0;}
+.flashcard{
+  width:100%;min-height:220px;
+  position:relative;transform-style:preserve-3d;
+  transition:transform 0.5s ease;cursor:pointer;
+}
+.flashcard.flipped{transform:rotateY(180deg);}
+.card-face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r2);padding:32px 28px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;min-height:220px;
+}
+.card-face.back{transform:rotateY(180deg);}
+.card-front-word{
+  font-family:var(--font-head);font-size:2.4rem;font-weight:800;
+  color:var(--text);letter-spacing:-1px;margin-bottom:10px;
+}
+.card-front-cat{
+  font-size:0.8rem;color:var(--muted);font-weight:600;
+  letter-spacing:0.05em;font-family:var(--font-head);
+}
+.card-tap-hint{
+  position:absolute;bottom:16px;right:20px;
+  font-size:0.75rem;color:var(--muted);opacity:0.6;
+}
+.card-back-hint{font-size:1.05rem;color:var(--text);line-height:1.6;margin-bottom:12px;}
+.card-back-cat{font-size:0.8rem;color:var(--accent2);font-weight:600;font-family:var(--font-head);}
+.fc-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.fc-btn{
+  padding:14px;border-radius:var(--r);font-family:var(--font-head);
+  font-size:0.9rem;font-weight:700;cursor:pointer;
+  border:none;transition:all 0.2s;
+}
+.fc-bad{background:rgba(255,107,107,0.15);color:var(--accent3);border:1px solid rgba(255,107,107,0.3);}
+.fc-bad:hover{background:rgba(255,107,107,0.25);}
+.fc-good{background:rgba(79,255,176,0.15);color:var(--accent);border:1px solid rgba(79,255,176,0.3);}
+.fc-good:hover{background:rgba(79,255,176,0.25);}
+
+.fc-progress{
+  background:var(--bg3);border-radius:100px;height:6px;
+  margin-bottom:20px;overflow:hidden;
+}
+.fc-progress-bar{height:100%;border-radius:100px;background:var(--accent);transition:width 0.5s ease;}
+.fc-status{
+  display:flex;justify-content:space-between;
+  font-size:0.8rem;color:var(--muted);margin-bottom:10px;
+}
+
+/* REVEAL WORD */
+.word-reveal{
+  font-family:var(--font-mono);font-size:2rem;
+  letter-spacing:0.2em;color:var(--accent);
+  margin:12px 0;font-weight:500;
+}
+
+/* ===================== MODAL ===================== */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(8,12,20,0.92);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;padding:20px;
+  display:none;
+}
+.modal-overlay.open{display:flex;animation:fadeIn 0.25s ease;}
+.modal-box{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:28px;padding:40px 36px;
+  max-width:400px;width:100%;text-align:center;
+  position:relative;
+}
+.modal-box::before{
+  content:'';position:absolute;top:-1px;left:50%;
+  width:60%;height:2px;transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+}
+.modal-emoji{font-size:3.5rem;margin-bottom:12px;display:block;}
+.modal-title{font-family:var(--font-head);font-size:1.6rem;font-weight:800;margin-bottom:4px;}
+.modal-score{
+  font-family:var(--font-mono);font-size:4rem;
+  color:var(--gold);margin:16px 0;line-height:1;
+}
+.modal-stats{
+  color:var(--muted);line-height:2;font-size:0.9rem;margin-bottom:28px;
+}
+.modal-stats strong{color:var(--text);}
+.modal-btn-row{display:flex;flex-direction:column;gap:10px;}
+.mbtn{
+  padding:15px;border-radius:var(--r);font-family:var(--font-head);
+  font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;border:none;
+}
+.mbtn-primary{background:var(--accent);color:var(--bg);}
+.mbtn-primary:hover{background:#3ae89a;}
+.mbtn-sec{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.mbtn-sec:hover{border-color:var(--text);color:var(--text);}
+
+/* ===================== TOAST ===================== */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel);border:1px solid var(--border);
+  padding:12px 24px;border-radius:100px;
+  font-size:0.9rem;font-weight:600;
+  z-index:9999;opacity:0;transition:all 0.3s;
+  pointer-events:none;white-space:nowrap;
+  max-width:90vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.success{border-color:var(--accent);color:var(--accent);}
+.toast.error{border-color:var(--accent3);color:var(--accent3);}
+.toast.warning{border-color:var(--gold);color:var(--gold);}
+.toast.info{border-color:var(--accent2);color:var(--accent2);}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:640px){
+  .stats-bar{grid-template-columns:1fr 1fr;}
+  .wc{width:40px;height:40px;font-size:1.1rem;border-radius:8px;}
+  .menu-headline{font-size:1.9rem;}
+  .mode-grid{grid-template-columns:1fr;}
+  .modal-score{font-size:3rem;}
+  .game-info{grid-template-columns:1fr 1fr 1fr;}
+}
+@media(max-width:400px){
+  .wc{width:34px;height:34px;font-size:0.95rem;}
+  .s-tile{width:44px;height:44px;font-size:1.3rem;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="logo">WORD<span>MASTER</span></div>
+    <div class="hdr-right">
+      <button class="pill-btn" id="lang-toggle">🌐 VI / EN</button>
+      <button class="sound-btn" id="sound-toggle" title="Toggle sound">🔊</button>
+    </div>
+  </header>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">Total XP</div>
+      <div class="stat-val green" id="total-xp">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Best Combo</div>
+      <div class="stat-val blue" id="best-combo">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Words Learned</div>
+      <div class="stat-val gold" id="words-learned">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Accuracy</div>
+      <div class="stat-val red" id="accuracy">—</div>
+    </div>
+  </div>
+
+  <!-- ======= SCREEN: MENU ======= -->
+  <div class="screen active" id="screen-menu">
+    <div class="menu-headline">Luyện từ vựng<br><span style="color:var(--accent)">B2–C1</span> mỗi ngày</div>
+    <div class="menu-sub">4 chế độ chơi · Từ vựng theo chủ đề · Theo dõi tiến độ</div>
+
+    <div class="mode-grid">
+      <div class="mode-card" onclick="Game.startMode('guess')">
+        <span class="mode-icon">📖</span>
+        <div class="mode-title">GUESS MODE</div>
+        <div class="mode-desc">Đoán từ theo gợi ý và chữ cái đầu. Kiểu Wordle với 6 lần thử.</div>
+        <div class="mode-tags"><span class="tag">⏱ 30s</span><span class="tag">🔤 First Letter</span><span class="tag">✏️ Wordle</span></div>
+      </div>
+      <div class="mode-card" onclick="Game.startMode('chain')">
+        <span class="mode-icon">🔗</span>
+        <div class="mode-title">CHAIN MODE</div>
+        <div class="mode-desc">Nối từ tiếng Anh hợp lệ. Từ mới phải bắt đầu bằng chữ cuối của từ trước.</div>
+        <div class="mode-tags"><span class="tag">⏱ 25s</span><span class="tag">📖 Cambridge</span><span class="tag">🔄 No Repeats</span></div>
+      </div>
+      <div class="mode-card" onclick="Game.startMode('scramble')">
+        <span class="mode-icon">🔀</span>
+        <div class="mode-title">SCRAMBLE MODE</div>
+        <div class="mode-desc">Sắp xếp lại các chữ cái để tạo thành từ đúng. Dùng gợi ý nếu cần!</div>
+        <div class="mode-tags"><span class="tag">⏱ 40s</span><span class="tag">💡 Hint</span><span class="tag">🧩 Unscramble</span></div>
+      </div>
+      <div class="mode-card flash" onclick="Game.startMode('flashcard')">
+        <span class="mode-icon">🃏</span>
+        <div class="mode-title">FLASHCARD</div>
+        <div class="mode-desc">Học từ vựng theo thẻ ghi nhớ. Lật thẻ để xem định nghĩa, tự đánh giá bản thân.</div>
+        <div class="mode-tags"><span class="tag" style="background:rgba(0,207,255,0.1);color:var(--accent2);border-color:rgba(0,207,255,0.2);">📚 All Words</span><span class="tag" style="background:rgba(0,207,255,0.1);color:var(--accent2);border-color:rgba(0,207,255,0.2);">🔁 Spaced</span></div>
+      </div>
+    </div>
+
+    <div class="lb-section">
+      <div class="lb-title">🏆 TOP SCORES</div>
+      <div id="lb-list"><div class="lb-row" style="color:var(--muted);font-size:0.85rem;">No scores yet — be the first!</div></div>
+    </div>
+  </div>
+
+  <!-- ======= SCREEN: GAME ======= -->
+  <div class="screen" id="screen-game">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="Game.backToMenu()">← Back</button>
+      <div class="mode-badge" id="mode-badge">📖 GUESS MODE</div>
+      <button class="btn-hint" id="hint-btn" onclick="Game.useHint()" disabled>💡 Hint</button>
+    </div>
+
+    <div class="game-info">
+      <div class="gi-item"><span class="gi-label">Score</span><span class="gi-val score" id="score-display">0</span></div>
+      <div class="gi-item"><span class="gi-label">⏱ Time</span><span class="gi-val timer" id="timer-val">30</span></div>
+      <div class="gi-item"><span class="gi-label">Combo</span><span class="gi-val combo" id="combo-display">×0</span></div>
+    </div>
+
+    <div class="guide-box" id="guide-box"></div>
+
+    <div class="q-panel">
+      <div class="cat-chip" id="cat-chip">📚 Category</div>
+      <div id="hint-content"></div>
+      <div id="word-display"></div>
+    </div>
+
+    <div class="input-wrap">
+      <input type="text" class="game-input" id="game-input"
+             placeholder="Type your answer..." maxlength="50" autocomplete="off">
+      <div class="btn-row">
+        <button class="btn btn-skip" onclick="Game.skip()">⏭ Skip</button>
+        <button class="btn btn-submit" onclick="Game.submit()">✅ Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= SCREEN: FLASHCARD ======= -->
+  <div class="screen" id="screen-flashcard">
+    <div class="game-topbar">
+      <button class="back-btn" onclick="Game.backToMenu()">← Back</button>
+      <div class="mode-badge">🃏 FLASHCARD</div>
+      <div style="width:80px"></div>
+    </div>
+
+    <div class="fc-status">
+      <span id="fc-progress-label">Card 1 / 0</span>
+      <span id="fc-stats-label">✅ 0 &nbsp; ❌ 0</span>
+    </div>
+    <div class="fc-progress"><div class="fc-progress-bar" id="fc-bar" style="width:0%"></div></div>
+
+    <div class="flashcard-wrap">
+      <div class="flashcard" id="flashcard" onclick="FC.flip()">
+        <div class="card-face front">
+          <div class="card-front-word" id="fc-word">WORD</div>
+          <div class="card-front-cat" id="fc-cat">Category</div>
+          <div class="card-tap-hint">Tap to reveal →</div>
+        </div>
+        <div class="card-face back">
+          <div class="card-back-hint" id="fc-hint">Definition appears here</div>
+          <div class="card-back-cat" id="fc-cat2">Category</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc-actions" id="fc-actions" style="display:none">
+      <button class="fc-btn fc-bad" onclick="FC.rate(false)">😕 Again</button>
+      <button class="fc-btn fc-good" onclick="FC.rate(true)">✅ Got it!</button>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- GAME OVER MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <span class="modal-emoji">🎉</span>
+    <div class="modal-title">Game Over!</div>
+    <div class="modal-score" id="modal-score">0</div>
+    <div class="modal-stats" id="modal-stats"></div>
+    <div class="modal-btn-row">
+      <button class="mbtn mbtn-primary" onclick="Game.playAgain()">Play Again</button>
+      <button class="mbtn mbtn-sec" onclick="Game.backToMenu()">Back to Menu</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ====================================================
+// SOUND MANAGER
+// ====================================================
+const Sound = {
+  ctx: null, vol: 0.5, on: true,
+  init() {
+    try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { this.on = false; }
+  },
+  resume() { if (this.ctx?.state === 'suspended') this.ctx.resume(); },
+  _play(freqs, type='sine', dur=0.25, gap=0.1) {
+    if (!this.on || !this.ctx) return;
+    const now = this.ctx.currentTime;
+    freqs.forEach((f,i) => {
+      const o = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      o.connect(g); g.connect(this.ctx.destination);
+      o.type = type; o.frequency.value = f;
+      g.gain.value = this.vol * 0.35;
+      const t = now + i * gap;
+      o.start(t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.stop(t + dur);
+    });
+  },
+  success() { this._play([523,659,784], 'sine', 0.3, 0.1); },
+  error()   { this._play([220], 'sawtooth', 0.2, 0); },
+  beep()    { this._play([440], 'sine', 0.15, 0); },
+  tick()    { this._play([660], 'triangle', 0.08, 0); },
+  gameover(){ this._play([440,392,349,294], 'sine', 0.4, 0.18); },
+  toggle()  { this.on = !this.on; return this.on; }
+};
+document.addEventListener('click', () => Sound.resume(), {once:true});
+
+// ====================================================
+// WORD DATABASE
+// ====================================================
+const DB = [
+  // Life Stories
+  {w:'ACHIEVEMENT',h:'Something someone succeeded in doing after much effort',c:'Life Stories'},
+  {w:'DETERMINATION',h:'Firmness of purpose; the quality of being firmly decided',c:'Life Stories'},
+  {w:'OVERCOME',h:'Succeed in dealing with a problem or difficulty',c:'Life Stories'},
+  {w:'INSPIRATION',h:'The process of being mentally stimulated to do something creative',c:'Life Stories'},
+  {w:'PERSEVERANCE',h:'Continued effort to do something despite difficulties',c:'Life Stories'},
+  {w:'RESILIENCE',h:'The ability to recover quickly from difficulties or setbacks',c:'Life Stories'},
+  {w:'MILESTONE',h:'An important event in the development of something',c:'Life Stories'},
+  {w:'LEGACY',h:'Something handed down from the past to future generations',c:'Life Stories'},
+  // Urbanisation
+  {w:'URBANISATION',h:'The process by which an area becomes more urban',c:'Urbanisation'},
+  {w:'INFRASTRUCTURE',h:'Basic physical structures needed for a society to operate',c:'Urbanisation'},
+  {w:'MIGRATION',h:'Movement of people from one region or country to another',c:'Urbanisation'},
+  {w:'CONGESTION',h:'The state of being overcrowded, especially with traffic',c:'Urbanisation'},
+  {w:'METROPOLITAN',h:'Relating to a large city or the main city of a country',c:'Urbanisation'},
+  {w:'SUSTAINABLE',h:'Able to be maintained without harming the environment',c:'Urbanisation'},
+  {w:'RESIDENTIAL',h:'Relating to an area where people live rather than work',c:'Urbanisation'},
+  {w:'COMMERCIAL',h:'Concerned with trade and making a profit',c:'Urbanisation'},
+  // Green Movement
+  {w:'BIODIVERSITY',h:'The variety of plant and animal life in a habitat',c:'Green Movement'},
+  {w:'CONSERVATION',h:'Protection of plants, animals, and natural environments',c:'Green Movement'},
+  {w:'ECOSYSTEM',h:'A community of living organisms and their environment',c:'Green Movement'},
+  {w:'RENEWABLE',h:'A source of energy that is naturally replenished',c:'Green Movement'},
+  {w:'EMISSION',h:'The production and release of gases into the atmosphere',c:'Green Movement'},
+  {w:'DEFORESTATION',h:'The action of clearing a wide area of trees',c:'Green Movement'},
+  {w:'RECYCLABLE',h:'Able to be converted into reusable material',c:'Green Movement'},
+  // ASEAN
+  {w:'SOLIDARITY',h:'Unity or agreement of feeling or action among a group',c:'ASEAN'},
+  {w:'INTEGRATION',h:'The act of combining parts into a whole',c:'ASEAN'},
+  {w:'DIPLOMACY',h:'The profession or skill of managing international relations',c:'ASEAN'},
+  {w:'SOVEREIGNTY',h:'Supreme power or authority, especially of a state',c:'ASEAN'},
+  {w:'COOPERATION',h:'The process of working together to achieve a goal',c:'ASEAN'},
+  {w:'INITIATIVE',h:'A new plan or action to solve a problem',c:'ASEAN'},
+  {w:'MEMBERSHIP',h:'The state of being a member of an organisation',c:'ASEAN'},
+  {w:'HARMONY',h:'A state of peaceful agreement and coexistence',c:'ASEAN'},
+  // Globalisation
+  {w:'GLOBALISATION',h:'The process by which businesses develop international influence',c:'Globalisation'},
+  {w:'INTERCONNECTED',h:'Things that are mutually connected or related',c:'Globalisation'},
+  {w:'OUTSOURCING',h:'Obtaining goods or services from an outside supplier',c:'Globalisation'},
+  {w:'MULTINATIONAL',h:'A company operating in several different countries',c:'Globalisation'},
+  {w:'INTERDEPENDENCE',h:'Mutual dependence between things or between countries',c:'Globalisation'},
+  // Endangered Species
+  {w:'ENDANGERED',h:'A species at risk of becoming extinct',c:'Endangered Species'},
+  {w:'EXTINCTION',h:'The state or process of a species no longer existing',c:'Endangered Species'},
+  {w:'HABITAT',h:'The natural home or environment of an organism',c:'Endangered Species'},
+  {w:'POACHING',h:'The illegal hunting of protected wild animals',c:'Endangered Species'},
+  {w:'WILDLIFE',h:'Animals and plants living in natural conditions',c:'Endangered Species'},
+  {w:'PRESERVATION',h:'The act of keeping something safe from harm or decay',c:'Endangered Species'},
+  // AI
+  {w:'ALGORITHM',h:'A process or set of rules used in calculations or problem-solving',c:'Technology'},
+  {w:'AUTOMATION',h:'The use of technology to perform tasks without human control',c:'Technology'},
+  {w:'INNOVATION',h:'A new method, idea, or product that brings improvement',c:'Technology'},
+  {w:'BREAKTHROUGH',h:'A sudden, dramatic advance or discovery',c:'Technology'},
+  {w:'CYBERSECURITY',h:'The practice of protecting computer systems from theft',c:'Technology'},
+  {w:'ROBOTICS',h:'The design, construction, and operation of robots',c:'Technology'},
+  // Education
+  {w:'INTERACTIVE',h:'Allowing a two-way flow of information or action',c:'Education'},
+  {w:'CURRICULUM',h:'The subjects comprising a course of study in school',c:'Education'},
+  {w:'PEDAGOGY',h:'The method and practice of teaching as an academic subject',c:'Education'},
+  {w:'ASSESSMENT',h:'The evaluation of a student\'s knowledge or ability',c:'Education'},
+  {w:'COMPETENCY',h:'The ability to do something successfully and efficiently',c:'Education'},
+  // Careers
+  {w:'VOCATION',h:'A strong feeling of suitability for a particular career',c:'Careers'},
+  {w:'INTERNSHIP',h:'A temporary period of supervised practical work experience',c:'Careers'},
+  {w:'ENTREPRENEUR',h:'A person who sets up a business, taking on financial risks',c:'Careers'},
+  {w:'CERTIFICATION',h:'An official document confirming a qualification or skill',c:'Careers'},
+  {w:'RECRUITMENT',h:'The action of finding and selecting new people to join an organisation',c:'Careers'},
+  {w:'NETWORKING',h:'Interacting with others to exchange information and build relationships',c:'Careers'},
+  // Health
+  {w:'WELLBEING',h:'The state of being comfortable, healthy, and happy',c:'Health'},
+  {w:'NUTRITION',h:'The process of providing the body with nourishing food',c:'Health'},
+  {w:'PREVENTIVE',h:'Designed to stop something bad from happening',c:'Health'},
+  {w:'THERAPY',h:'Treatment intended to relieve or heal a disorder',c:'Health'},
+  {w:'MINDFULNESS',h:'A mental state achieved by focusing on the present moment',c:'Health'},
+  {w:'HOLISTIC',h:'Treating the whole person, not just symptoms',c:'Health'},
+  // General Academic
+  {w:'ACCOMMODATE',h:'To provide space for, or adjust to fit different needs',c:'General'},
+  {w:'ACCUMULATE',h:'To gather or acquire an increasing amount over time',c:'General'},
+  {w:'ACKNOWLEDGE',h:'To accept or admit the existence of something',c:'General'},
+  {w:'ADVOCATE',h:'To publicly recommend or support something',c:'General'},
+  {w:'ANTICIPATE',h:'To expect or predict a future event',c:'General'},
+  {w:'DETERIORATE',h:'To become progressively worse',c:'General'},
+  {w:'FUNDAMENTAL',h:'Forming a necessary base; of central importance',c:'General'},
+  {w:'HYPOTHESIS',h:'A proposed explanation made on the basis of limited evidence',c:'General'},
+  {w:'INEVITABLE',h:'Certain to happen; unable to be avoided',c:'General'},
+  {w:'PHENOMENON',h:'A fact or situation that is observed to exist or happen',c:'General'},
+  {w:'SIGNIFICANCE',h:'The quality of being important or having special meaning',c:'General'},
+  {w:'SUBSTANTIAL',h:'Of considerable size, value, or importance',c:'General'},
+  {w:'TOLERANCE',h:'The willingness to accept different opinions or behaviour',c:'General'},
+  {w:'VULNERABLE',h:'Susceptible to physical or emotional harm',c:'General'},
+];
+
+// Cambridge-style word list for chain mode
+const VALID_WORDS = new Set([
+  'RUN','WALK','TALK','SPEAK','EAT','DRINK','SLEEP','SEE','LOOK','HEAR',
+  'LISTEN','WRITE','READ','LEARN','STUDY','WORK','PLAY','THINK','KNOW',
+  'UNDERSTAND','REMEMBER','FORGET','BELIEVE','FEEL','LOVE','LIKE','HATE',
+  'HELP','ASK','ANSWER','CALL','COME','GO','MOVE','STAY','LIVE',
+  'BEGIN','START','STOP','FINISH','CREATE','MAKE','DO','BUILD',
+  'OPEN','CLOSE','ENTER','LEAVE','FOLLOW','LEAD','WIN','LOSE',
+  'TIME','DAY','YEAR','WEEK','MONTH','HOUR','MINUTE','SECOND',
+  'PERSON','PEOPLE','MAN','WOMAN','CHILD','FAMILY','HOME','HOUSE',
+  'GOOD','BAD','BIG','SMALL','LARGE','HOT','COLD','FAST','SLOW',
+  'EASY','HARD','SIMPLE','CLEAR','BRIGHT','DARK','LONG','SHORT',
+  'ABLE','ABOUT','ABOVE','ACCEPT','ACCESS','ACROSS','ACT','ACTION',
+  'ADD','ALSO','ALWAYS','AMOUNT','AND','ANOTHER','AREA','AROUND',
+  'BACK','BANK','BASE','BECOME','BETWEEN','BOOK','BOTH','BRING',
+  'CARE','CARRY','CASE','CHANGE','CHOOSE','CLEAR','CLOSE','COME',
+  'COVER','DEAL','DECIDE','DEFINE','DEMAND','DEPEND','DESIGN',
+  'DEVELOP','DIFFERENT','DOWN','DRAW','DRIVE','EACH','EARN','EFFECT',
+  'END','EVEN','EVER','EVERY','EXAMPLE','EXIST','EXPECT','EXPLAIN',
+  'FACE','FACT','FALL','FAR','FEEL','FIELD','FILE','FILL','FIND',
+  'FIRM','FIRST','FOLLOW','FORCE','FORM','FOUND','FROM','FRONT',
+  'FULL','GAME','GENERAL','GIVE','GREAT','GROUND','GROW','HAND',
+  'HAVE','HEAD','HEART','HIGH','HOLD','HOPE','HUMAN','IDEA','IMPORTANT',
+  'INCLUDE','INCREASE','INDUSTRY','INFORMATION','INTO','ISSUE','ITEM',
+  'JOIN','JUST','KEEP','KIND','LAST','LATE','LATER','LEAD','LEFT',
+  'LEVEL','LIGHT','LINE','LIST','LOCAL','LOOK','LOW','MAIN','MATTER',
+  'MEAN','MEET','MEMBER','MIND','MISS','MOMENT','MONEY','MORE',
+  'MOST','MUCH','NAME','NEED','NEW','NEXT','NOTE','NUMBER','OFFER',
+  'OPEN','ORDER','OTHER','OVER','PAST','PLAN','POINT','POWER',
+  'PRESENT','PROBLEM','PROVIDE','QUESTION','REACH','REAL','REASON',
+  'RECORD','RESULT','RIGHT','ROLE','ROOM','RULE','SAME','SENSE',
+  'SERVE','SHOW','SIDE','SINCE','SKILL','SOME','SORT','SOUTH',
+  'STANDARD','STAND','STATE','STILL','STORY','STRONG','SUCH',
+  'SYSTEM','TABLE','TAKE','THAN','THEIR','THEN','THERE','THEY',
+  'THING','THOSE','THROUGH','TODAY','TOGETHER','TOLD','TURN',
+  'UNDER','UNTIL','USED','VALUE','VIEW','WANT','WATER','WELL',
+  'WERE','WHEN','WHERE','WHICH','WHILE','WILL','WITH','WORD',
+  'WORLD','WOULD','YEAR','YOUR',
+  ...DB.map(d=>d.w)
+]);
+
+// ====================================================
+// GLOBAL STATE
+// ====================================================
+const GS = {
+  mode: 'guess', score: 0, combo: 0, maxCombo: 0,
+  correctCount: 0, totalQ: 0, hintUsed: false,
+  currentWord: null, timer: 30, timerInt: null,
+  active: false, chainHistory: [], lastChar: '',
+  guesses: [], wordLen: 0, lang: 'en',
+  // persistent
+  totalXP: 0, bestCombo: 0, wordsLearned: new Set(), totalAns: 0, totalCorr: 0
+};
+
+// ====================================================
+// GUIDES
+// ====================================================
+const GUIDES = {
+  guess: {
+    en: '<strong>📖 Guess Mode:</strong> Read the hint and first letter, then type the correct word. You have up to 6 Wordle-style attempts per word. 30 seconds on the clock!',
+    vi: '<strong>📖 Đoán Từ:</strong> Đọc gợi ý và chữ cái đầu, rồi gõ từ đúng. Bạn có tối đa 6 lần thử theo kiểu Wordle. 30 giây mỗi từ!'
+  },
+  chain: {
+    en: '<strong>🔗 Chain Mode:</strong> Type a valid English word that starts with the last letter of the previous word. No repeats! 25 seconds per turn.',
+    vi: '<strong>🔗 Nối Từ:</strong> Nhập một từ tiếng Anh hợp lệ bắt đầu bằng chữ cuối của từ trước. Không được lặp! 25 giây mỗi lượt.'
+  },
+  scramble: {
+    en: '<strong>🔀 Scramble Mode:</strong> The word is shuffled — rearrange the letters to find the correct word. Use the hint if you\'re stuck! 40 seconds per word.',
+    vi: '<strong>🔀 Xáo Chữ:</strong> Từ đã bị xáo trộn — sắp xếp lại các chữ cái. Dùng gợi ý nếu bí! 40 giây mỗi từ.'
+  }
+};
+
+// ====================================================
+// UTILITY
+// ====================================================
+function $(id) { return document.getElementById(id); }
+
+function showToast(msg, type='info') {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = 'toast', 2500);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleWord(w) {
+  let arr = w.split('');
+  do { arr = shuffle(arr); } while (arr.join('') === w);
+  return arr.join('');
+}
+
+function loadPersist() {
+  try {
+    const d = JSON.parse(localStorage.getItem('wm_persist') || '{}');
+    GS.totalXP = d.xp || 0;
+    GS.bestCombo = d.bc || 0;
+    GS.wordsLearned = new Set(d.wl || []);
+    GS.totalAns = d.ta || 0;
+    GS.totalCorr = d.tc || 0;
+    GS.lang = d.lang || 'en';
+  } catch(e){}
+}
+
+function savePersist() {
+  const d = {
+    xp: GS.totalXP, bc: GS.bestCombo,
+    wl: [...GS.wordsLearned], ta: GS.totalAns,
+    tc: GS.totalCorr, lang: GS.lang
+  };
+  localStorage.setItem('wm_persist', JSON.stringify(d));
+}
+
+function updateStats() {
+  $('total-xp').textContent = GS.totalXP;
+  $('best-combo').textContent = GS.bestCombo;
+  $('words-learned').textContent = GS.wordsLearned.size;
+  $('accuracy').textContent = GS.totalAns > 0 ? Math.round((GS.totalCorr/GS.totalAns)*100)+'%' : '—';
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+// ====================================================
+// LEADERBOARD
+// ====================================================
+function loadLB() {
+  const lb = JSON.parse(localStorage.getItem('wm_lb') || '[]');
+  const list = $('lb-list');
+  if (!lb.length) {
+    list.innerHTML = '<div class="lb-row" style="color:var(--muted);font-size:0.85rem;">No scores yet — be the first!</div>';
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  list.innerHTML = lb.slice(0,8).map((r,i) => `
+    <div class="lb-row">
+      <span class="lb-rank">${medals[i]||'#'+(i+1)}</span>
+      <span class="lb-name">${r.name}</span>
+      <span class="lb-mode">${r.mode}</span>
+      <span class="lb-score">${r.score}</span>
+    </div>
+  `).join('');
+}
+
+function saveLB(score, mode) {
+  const lb = JSON.parse(localStorage.getItem('wm_lb') || '[]');
+  const names = ['THUY','MINH','HUNG','LAN','PHUONG','TUAN','HOA','DUC','MAI','LINH'];
+  lb.push({ name: names[Math.floor(Math.random()*names.length)]+Math.floor(Math.random()*100), score, mode });
+  lb.sort((a,b)=>b.score-a.score);
+  localStorage.setItem('wm_lb', JSON.stringify(lb.slice(0,10)));
+}
+
+// ====================================================
+// MAIN GAME
+// ====================================================
+const Game = {
+  init() {
+    loadPersist();
+    updateStats();
+    loadLB();
+    this.setupKeys();
+    $('lang-toggle').onclick = () => this.toggleLang();
+    $('sound-toggle').onclick = () => {
+      const on = Sound.toggle();
+      $('sound-toggle').textContent = on ? '🔊' : '🔇';
+    };
+    Sound.init();
+  },
+
+  toggleLang() {
+    GS.lang = GS.lang === 'en' ? 'vi' : 'en';
+    savePersist();
+    const g = $('guide-box');
+    if (g && GUIDES[GS.mode]) {
+      g.innerHTML = GUIDES[GS.mode][GS.lang];
+    }
+    showToast(GS.lang === 'vi' ? '🌐 Đã chuyển sang Tiếng Việt' : '🌐 Switched to English', 'info');
+  },
+
+  startMode(mode) {
+    if (mode === 'flashcard') { FC.start(); return; }
+    GS.mode = mode;
+    GS.score = 0; GS.combo = 0; GS.maxCombo = 0;
+    GS.correctCount = 0; GS.totalQ = 0; GS.hintUsed = false;
+    GS.chainHistory = []; GS.lastChar = ''; GS.active = true;
+    GS.guesses = [];
+
+    showScreen('screen-game');
+
+    const badges = { guess:'📖 GUESS MODE', chain:'🔗 CHAIN MODE', scramble:'🔀 SCRAMBLE MODE' };
+    $('mode-badge').textContent = badges[mode];
+
+    const times = { guess:30, chain:25, scramble:40 };
+    GS.timerDefault = times[mode];
+
+    $('guide-box').innerHTML = GUIDES[mode][GS.lang];
+    this.updateUI();
+    this.nextQuestion();
+    Sound.beep();
+  },
+
+  nextQuestion() {
+    if (!GS.active) return;
+    GS.totalQ++;
+    GS.hintUsed = false;
+    $('hint-btn').disabled = (GS.mode !== 'scramble');
+    $('hint-btn').style.opacity = (GS.mode === 'scramble') ? '1' : '0.3';
+    $('game-input').value = '';
+    $('game-input').className = 'game-input';
+
+    switch(GS.mode) {
+      case 'guess': this.setupGuess(); break;
+      case 'chain': this.setupChain(); break;
+      case 'scramble': this.setupScramble(); break;
+    }
+    this.resetTimer();
+    setTimeout(() => $('game-input').focus(), 100);
+  },
+
+  // --- GUESS MODE ---
+  setupGuess() {
+    const entry = DB[Math.floor(Math.random()*DB.length)];
+    GS.currentWord = entry;
+    GS.wordLen = entry.w.length;
+    GS.guesses = [];
+
+    $('cat-chip').textContent = `📚 ${entry.c}`;
+    $('hint-content').innerHTML = `
+      <div class="first-letter-badge">
+        First letter: <span class="fl">${entry.w[0]}</span>
+        &nbsp;·&nbsp; ${entry.w.length} letters
+      </div>
+      <div class="hint-text">💡 ${entry.h}</div>
+    `;
+    $('game-input').placeholder = `Type a ${entry.w.length}-letter word…`;
+    $('game-input').maxLength = entry.w.length;
+    this.renderWordleGrid();
+  },
+
+  renderWordleGrid() {
+    const e = GS.currentWord; const wl = GS.wordLen; const maxG = 6;
+    let html = '<div class="wordle-grid">';
+    for (let r=0; r<maxG; r++) {
+      html += '<div class="wordle-row">';
+      for (let c=0; c<wl; c++) {
+        const letter = GS.guesses[r]?.[c] || '';
+        let cls = '';
+        if (GS.guesses[r]) {
+          if (letter === e.w[c]) cls = 'correct';
+          else if (e.w.includes(letter)) cls = 'present';
+          else if (letter) cls = 'absent';
+        }
+        html += `<div class="wc ${cls} ${letter?'filled':''}">${letter}</div>`;
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    $('word-display').innerHTML = html;
+  },
+
+  submitGuess(input) {
+    if (input.length !== GS.wordLen) {
+      showToast(`Must be ${GS.wordLen} letters!`, 'warning');
+      return false;
+    }
+    GS.guesses.push(input);
+    this.renderWordleGrid();
+    if (input === GS.currentWord.w) {
+      this.correct(`✅ Correct! "${GS.currentWord.w}"`);
+      return true;
+    }
+    if (GS.guesses.length >= 6) {
+      this.wrong(`❌ The word was: ${GS.currentWord.w}`);
+      return true;
+    }
+    showToast('Not quite — try again!', 'warning');
+    return false;
+  },
+
+  // --- CHAIN MODE ---
+  setupChain() {
+    if (GS.chainHistory.length === 0) {
+      GS.currentWord = DB[Math.floor(Math.random()*DB.length)];
+      GS.chainHistory.push(GS.currentWord.w);
+      GS.lastChar = GS.currentWord.w.slice(-1);
+    }
+    const last = GS.chainHistory[GS.chainHistory.length-1];
+    const req = GS.lastChar;
+    $('cat-chip').textContent = `🔗 Chain: ${GS.chainHistory.length} word${GS.chainHistory.length!==1?'s':''}`;
+    $('hint-content').innerHTML = `
+      <div class="chain-req">Type a word starting with <span class="req-letter">${req}</span></div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-top:6px;">Must be a valid English word. No repeats.</div>
+    `;
+    const recent = GS.chainHistory.slice(-6);
+    $('word-display').innerHTML = `<div class="chain-display">
+      ${recent.map((w,i)=>`<span class="chain-word">${w}</span>${i<recent.length-1?'<span class="chain-arrow"> → </span>':''}`).join('')}
+    </div>`;
+    $('game-input').placeholder = `Word starting with "${req}"…`;
+    $('game-input').maxLength = 30;
+  },
+
+  submitChain(input) {
+    if (input.length < 2) { showToast('Word must be at least 2 letters!', 'warning'); return false; }
+    if (!/^[A-Z]+$/.test(input)) { showToast('Letters only!', 'warning'); return false; }
+    if (!VALID_WORDS.has(input)) { showToast(`"${input}" not in dictionary!`, 'error'); return false; }
+    if (GS.chainHistory.includes(input)) { showToast(`"${input}" already used!`, 'warning'); return false; }
+    if (input[0] !== GS.lastChar) { showToast(`Must start with "${GS.lastChar}"!`, 'warning'); return false; }
+    GS.chainHistory.push(input);
+    GS.lastChar = input.slice(-1);
+    this.correct(`🔗 +${10 + Math.floor(GS.combo/3)*5} pts — "${input}"`);
+    return true;
+  },
+
+  // --- SCRAMBLE MODE ---
+  setupScramble() {
+    const entry = DB[Math.floor(Math.random()*DB.length)];
+    GS.currentWord = entry;
+    GS.scrambled = shuffleWord(entry.w);
+
+    $('cat-chip').textContent = `📚 ${entry.c}`;
+    $('hint-content').innerHTML = `
+      <div class="hint-text">💡 ${entry.h}</div>
+    `;
+    $('word-display').innerHTML = `
+      <div class="scramble-tiles">
+        ${GS.scrambled.split('').map(l=>`<div class="s-tile">${l}</div>`).join('')}
+      </div>
+    `;
+    $('game-input').placeholder = `Unscramble (${entry.w.length} letters)…`;
+    $('game-input').maxLength = entry.w.length + 2;
+  },
+
+  useHint() {
+    if (GS.mode !== 'scramble' || GS.hintUsed) return;
+    GS.hintUsed = true;
+    $('hint-btn').disabled = true;
+    $('hint-btn').style.opacity = '0.3';
+    const w = GS.currentWord.w;
+    const partial = w.substring(0, Math.ceil(w.length/2)) + '…';
+    showToast(`💡 Starts with: ${partial}`, 'info');
+  },
+
+  // --- TIMER ---
+  resetTimer() {
+    if (GS.timerInt) clearInterval(GS.timerInt);
+    GS.timer = GS.timerDefault;
+    const tv = $('timer-val');
+    tv.textContent = GS.timer;
+    tv.className = 'gi-val timer';
+    GS.timerInt = setInterval(() => {
+      GS.timer--;
+      tv.textContent = GS.timer;
+      if (GS.timer <= 5) {
+        tv.className = 'gi-val timer urgent';
+        if (GS.timer > 0) Sound.tick();
+      }
+      if (GS.timer <= 0) {
+        clearInterval(GS.timerInt);
+        this.timeout();
+      }
+    }, 1000);
+  },
+
+  timeout() {
+    if (!GS.active) return;
+    GS.combo = 0;
+    GS.totalAns++;
+    updateStats();
+    Sound.error();
+    showToast('⏰ Time\'s up!', 'error');
+    setTimeout(() => this.nextQuestion(), 900);
+  },
+
+  // --- SUBMIT ---
+  submit() {
+    if (!GS.active) return;
+    Sound.resume();
+    const input = $('game-input').value.trim().toUpperCase();
+    if (!input) { showToast('Type your answer!', 'warning'); return; }
+
+    GS.totalAns++;
+    let handled = false;
+    switch(GS.mode) {
+      case 'guess': handled = this.submitGuess(input); break;
+      case 'chain': handled = this.submitChain(input); if (!handled) GS.totalAns--; break;
+      case 'scramble':
+        if (input === GS.currentWord.w) {
+          this.correct(`✅ "${GS.currentWord.w}" — well done!`);
+          handled = true;
+        } else {
+          showToast(`❌ Wrong! Answer: ${GS.currentWord.w}`, 'error');
+          this.wrong();
+          handled = true;
+        }
+        break;
+    }
+  },
+
+  correct(msg) {
+    GS.combo++;
+    GS.maxCombo = Math.max(GS.maxCombo, GS.combo);
+    GS.correctCount++;
+    GS.totalCorr++;
+    if (GS.currentWord) GS.wordsLearned.add(GS.currentWord.w);
+    const pts = 10 + Math.floor(GS.combo/3)*5;
+    GS.score += pts;
+    GS.totalXP += pts;
+    if (GS.maxCombo > GS.bestCombo) GS.bestCombo = GS.maxCombo;
+    savePersist();
+    this.updateUI();
+    Sound.success();
+    showToast(msg || `✅ +${pts} XP`, 'success');
+    setTimeout(() => this.nextQuestion(), 900);
+  },
+
+  wrong(msg) {
+    GS.combo = 0;
+    this.updateUI();
+    Sound.error();
+    if (msg) showToast(msg, 'error');
+    setTimeout(() => this.nextQuestion(), 900);
+  },
+
+  skip() {
+    if (!GS.active) return;
+    GS.combo = 0; GS.totalAns++;
+    this.updateUI();
+    Sound.beep();
+    showToast('⏭ Skipped', 'warning');
+    this.nextQuestion();
+  },
+
+  updateUI() {
+    $('score-display').textContent = GS.score;
+    $('combo-display').textContent = `×${GS.combo}`;
+    updateStats();
+  },
+
+  backToMenu() {
+    if (GS.timerInt) clearInterval(GS.timerInt);
+    GS.active = false;
+    showScreen('screen-menu');
+    loadLB();
+    updateStats();
+    $('modal').classList.remove('open');
+    Sound.beep();
+  },
+
+  gameOver() {
+    GS.active = false;
+    if (GS.timerInt) clearInterval(GS.timerInt);
+    Sound.gameover();
+    saveLB(GS.score, GS.mode.toUpperCase());
+    savePersist();
+    $('modal-score').textContent = GS.score;
+    $('modal-stats').innerHTML = `
+      ✅ Correct: <strong>${GS.correctCount}</strong><br>
+      🔥 Best Combo: <strong>×${GS.maxCombo}</strong><br>
+      📊 Questions: <strong>${GS.totalQ}</strong><br>
+      🎓 Total XP: <strong>${GS.totalXP}</strong>
+    `;
+    $('modal').classList.add('open');
+    loadLB();
+  },
+
+  playAgain() {
+    $('modal').classList.remove('open');
+    this.startMode(GS.mode);
+  },
+
+  setupKeys() {
+    document.addEventListener('keydown', e => {
+      if ($('screen-game').classList.contains('active') && e.key === 'Enter') {
+        this.submit();
+      }
+    });
+  }
+};
+
+// ====================================================
+// FLASHCARD MODULE
+// ====================================================
+const FC = {
+  deck: [], idx: 0, correct: 0, wrong: 0, flipped: false,
+
+  start() {
+    this.deck = shuffle([...DB]);
+    this.idx = 0; this.correct = 0; this.wrong = 0;
+    showScreen('screen-flashcard');
+    this.show();
+    Sound.beep();
+  },
+
+  show() {
+    if (this.idx >= this.deck.length) { this.done(); return; }
+    const entry = this.deck[this.idx];
+    this.flipped = false;
+    const card = $('flashcard');
+    card.classList.remove('flipped');
+    $('fc-word').textContent = entry.w;
+    $('fc-cat').textContent = entry.c;
+    $('fc-hint').textContent = entry.h;
+    $('fc-cat2').textContent = entry.c;
+    $('fc-actions').style.display = 'none';
+    this.updateProgress();
+  },
+
+  flip() {
+    if (this.flipped) return;
+    this.flipped = true;
+    $('flashcard').classList.add('flipped');
+    $('fc-actions').style.display = 'grid';
+    Sound.beep();
+  },
+
+  rate(knew) {
+    if (knew) {
+      this.correct++;
+      GS.wordsLearned.add(this.deck[this.idx].w);
+      GS.totalXP += 5; GS.totalCorr++; GS.totalAns++;
+      savePersist(); updateStats();
+      Sound.success();
+    } else {
+      this.wrong++;
+      this.deck.push(this.deck[this.idx]); // re-add to end
+      GS.totalAns++;
+      Sound.error();
+    }
+    this.idx++;
+    setTimeout(() => this.show(), 200);
+  },
+
+  updateProgress() {
+    const total = this.deck.length;
+    const pct = total > 0 ? Math.round((this.idx/total)*100) : 0;
+    $('fc-bar').style.width = pct + '%';
+    $('fc-progress-label').textContent = `Card ${this.idx+1} / ${total}`;
+    $('fc-stats-label').textContent = `✅ ${this.correct}   ❌ ${this.wrong}`;
+  },
+
+  done() {
+    const card = $('flashcard');
+    card.innerHTML = `
+      <div class="card-face front" style="position:relative;backface-visibility:hidden">
+        <div style="font-size:3rem;margin-bottom:12px">🎓</div>
+        <div class="card-front-word" style="font-size:1.5rem">Session Complete!</div>
+        <div class="card-front-cat" style="margin-top:8px">
+          ✅ ${this.correct} known &nbsp; ❌ ${this.wrong} to review
+        </div>
+      </div>
+    `;
+    $('fc-actions').style.display = 'none';
+    Sound.success();
+    savePersist(); updateStats();
+  }
+};
+
+// ====================================================
+// INIT
+// ====================================================
+document.addEventListener('DOMContentLoaded', () => Game.init());
+</script>
+</body>
+</html>
