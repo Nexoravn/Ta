@@ -550,6 +550,17 @@ body::after {
         <div class="mode-title">GUESS MODE</div>
         <div class="mode-desc">Đoán từ theo gợi ý và chữ cái đầu. Kiểu Wordle với 6 lần thử.</div>
         <div class="mode-tags"><span class="tag">⏱ 30s</span><span class="tag">🔤 First Letter</span><span class="tag">✏️ Wordle</span></div>
+        <div style="margin-top:14px;" onclick="event.stopPropagation()">
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;font-family:var(--font-head);">Độ dài từ</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;" id="len-selector">
+            <button class="len-btn" data-len="any" onclick="Game.setWordLen('any')" style="padding:4px 10px;border-radius:100px;border:1px solid var(--accent);background:rgba(79,255,176,0.15);color:var(--accent);font-size:0.72rem;font-weight:700;cursor:pointer;font-family:var(--font-head);">Tất cả</button>
+            <button class="len-btn" data-len="5" onclick="Game.setWordLen(5)" style="padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:0.72rem;font-weight:700;cursor:pointer;font-family:var(--font-head);">5 chữ</button>
+            <button class="len-btn" data-len="6" onclick="Game.setWordLen(6)" style="padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:0.72rem;font-weight:700;cursor:pointer;font-family:var(--font-head);">6 chữ</button>
+            <button class="len-btn" data-len="7" onclick="Game.setWordLen(7)" style="padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:0.72rem;font-weight:700;cursor:pointer;font-family:var(--font-head);">7 chữ</button>
+            <button class="len-btn" data-len="8" onclick="Game.setWordLen(8)" style="padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:0.72rem;font-weight:700;cursor:pointer;font-family:var(--font-head);">8 chữ</button>
+            <button class="len-btn" data-len="9" onclick="Game.setWordLen(9)" style="padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:0.72rem;font-weight:700;cursor:pointer;font-family:var(--font-head);">9+ chữ</button>
+          </div>
+        </div>
       </div>
       <div class="mode-card" onclick="Game.startMode('chain')">
         <span class="mode-icon">🔗</span>
@@ -829,6 +840,67 @@ const VALID_WORDS = new Set([
   'UNDER','UNTIL','USED','VALUE','VIEW','WANT','WATER','WELL',
   'WERE','WHEN','WHERE','WHICH','WHILE','WILL','WITH','WORD',
   'WORLD','WOULD','YEAR','YOUR',
+  // Extra common words
+  'ABOUT','AFTER','AGAIN','ALONG','APPLY','ARGUE','ARISE','ASIDE',
+  'AUDIO','AUDIT','AVOID','AWARD','AWARE','BADLY','BASIC','BEACH',
+  'BELOW','BENCH','BIRTH','BLACK','BLADE','BLAME','BLANK','BLAST',
+  'BLEED','BLEND','BLESS','BLOCK','BLOOD','BLOOM','BLOWN','BOARD',
+  'BOOST','BOUND','BRAIN','BRAND','BRAVE','BREAD','BREAK','BREED',
+  'BRICK','BRIDE','BRIEF','BRING','BROAD','BROKE','BROOK','BROWN',
+  'BRUSH','BUDDY','BUILT','BURST','BUYER','CABLE','CATCH','CAUSE',
+  'CEASE','CHAIN','CHAIR','CHALK','CHART','CHASE','CHECK','CHESS',
+  'CHEST','CHIEF','CHINA','CIVIL','CLAIM','CLASH','CLASS','CLEAN',
+  'CLICK','CLIFF','CLIMB','CLOCK','CLOUD','COACH','COAST','COUNT',
+  'COURT','CRACK','CRAFT','CRASH','CRAZY','CREAM','CRIME','CRISP',
+  'CROSS','CROWD','CROWN','CRUSH','CURVE','CYCLE','DAILY','DANCE',
+  'DATUM','DEATH','DEPOT','DEPTH','DRAFT','DRAIN','DRAMA','DRAPE',
+  'DREAM','DRESS','DRIFT','DROPS','DROVE','DYING','EAGER','EARLY',
+  'EARTH','EIGHT','ELECT','EMAIL','EMPTY','ENEMY','ENJOY','ENTER',
+  'EQUAL','ERROR','ESSAY','ETHIC','EVENT','EXACT','EXIST','EXTRA',
+  'FAINT','FAITH','FALSE','FANCY','FAULT','FEAST','FENCE','FEVER',
+  'FIFTH','FIFTY','FIGHT','FINAL','FIRST','FIXED','FLAME','FLASH',
+  'FLEET','FLESH','FLOAT','FLOOD','FLOOR','FOCUS','FOUND','FRAME',
+  'FRANK','FRAUD','FRESH','FRONT','FROST','FUNNY','GENRE','GIVEN',
+  'GLASS','GLOBE','GLOSS','GRACE','GRADE','GRAIN','GRAND','GRANT',
+  'GRAPH','GRASP','GRASS','GRAVE','GROUP','GUARD','GUESS','GUIDE',
+  'GUILT','HEAVY','HENCE','HONEY','HONOR','HOTEL','HUMAN','HURRY',
+  'IDEAL','IMAGE','INDEX','INDIE','INPUT','JUDGE','JUICE','LABEL',
+  'LANCE','LAPSE','LATER','LAYER','LEARN','LEASE','LEAVE','LEGAL',
+  'LIMIT','LOCAL','LOOSE','LOYAL','LUCKY','LUNAR','MAGIC','MAJOR',
+  'MAKER','MARCH','MATCH','MAYOR','MERCY','MERIT','METAL','MIGHT',
+  'MINCE','MINOR','MINUS','MIXED','MODAL','MODEL','MONTH','MORAL',
+  'MOUNT','MOUTH','MUSIC','NAIVE','NEVER','NIGHT','NOISE','NORTH',
+  'NOVEL','NURSE','OCCUR','OCEAN','OFFER','OFTEN','OLIVE','ONION',
+  'ONSET','ORBIT','ORGAN','OTHER','OUGHT','OUTER','OWNER','OXIDE',
+  'OZONE','PAINT','PANEL','PAPER','PARTY','PATCH','PAUSE','PEACE',
+  'PEARL','PHASE','PHONE','PHOTO','PIANO','PIECE','PILOT','PITCH',
+  'PIXEL','PLACE','PLAIN','PLANT','PLATE','PLAZA','PLEAD','PLUCK',
+  'PLUMB','PLUME','PLUNGE','POINT','POLAR','PORCH','POUND','POWER',
+  'PRESS','PRICE','PRIDE','PRIME','PRINT','PRIOR','PRIZE','PROBE',
+  'PRONE','PROOF','PROSE','PROUD','PROVE','PROXY','PULSE','PUNCH',
+  'PUPIL','QUEEN','QUICK','QUIET','QUITE','QUOTA','QUOTE','RADAR',
+  'RAISE','RANGE','RAPID','RATIO','REACH','REACT','RELAY','REPLY',
+  'RIDER','RIDGE','RISEN','RIVAL','RIVER','ROUND','ROUTE','RULER',
+  'RURAL','SADLY','SAINT','SALAD','SAUCE','SCALE','SCARE','SCENE',
+  'SCORE','SENSE','SERVE','SEVEN','SHADE','SHAKE','SHALL','SHAME',
+  'SHARE','SHARP','SHIFT','SHIRT','SHOCK','SHOOT','SHORE','SIGHT',
+  'SINCE','SIXTH','SIXTY','SIZED','SKILL','SLAVE','SLIDE','SLOPE',
+  'SMART','SMILE','SMOKE','SOLID','SOLVE','SORRY','SOUND','SPACE',
+  'SPARE','SPARK','SPEAK','SPEND','SPILL','SPINE','SPLIT','SPOKE',
+  'SPRAY','SQUAD','STAFF','STAGE','STAIR','STAKE','STAMP','STARK',
+  'STEAM','STEEL','STEEP','STEER','STOCK','STONE','STORE','STORM',
+  'STORY','STOVE','STRIP','STUCK','STUDY','STUFF','STYLE','SUGAR',
+  'SUITE','SUPER','SWEAR','SWEPT','SWIFT','SWING','TEACH','THANK',
+  'THEIR','THEME','THICK','THING','THREE','THROW','TIRED','TITLE',
+  'TOTAL','TOUCH','TOUGH','TOWEL','TOWER','TRACE','TRACK','TRADE',
+  'TRAIL','TRAIN','TRAIT','TREND','TRIAL','TRIBE','TRIED','TRUST',
+  'TRUTH','TUMOR','TWICE','TWIST','ULTRA','UNCLE','UNION','UNITY',
+  'UNTIL','UPPER','UPSET','URBAN','USAGE','USUAL','UTTER','VALID',
+  'VALVE','VENUE','VERSE','VISIT','VITAL','VIVID','VOCAL','VOICE',
+  'VOTER','WAGON','WASTE','WATCH','WEIGH','WHEEL','WHERE','WHOLE',
+  'WHOSE','WIDER','WITCH','WITTY','WOMAN','WORLD','WORRY','WORSE',
+  'WORST','WORTH','WOULD','WOUND','WRONG','WROTE','YIELD','YOUNG',
+  'YOUTH','ZONAL',
   ...DB.map(d=>d.w)
 ]);
 
@@ -841,6 +913,7 @@ const GS = {
   currentWord: null, timer: 30, timerInt: null,
   active: false, chainHistory: [], lastChar: '',
   guesses: [], wordLen: 0, lang: 'en',
+  wordLenFilter: 'any',
   // persistent
   totalXP: 0, bestCombo: 0, wordsLearned: new Set(), totalAns: 0, totalCorr: 0
 };
@@ -970,6 +1043,16 @@ const Game = {
     Sound.init();
   },
 
+  setWordLen(len) {
+    GS.wordLenFilter = len;
+    document.querySelectorAll('.len-btn').forEach(b => {
+      const active = b.dataset.len == len;
+      b.style.borderColor = active ? 'var(--accent)' : 'var(--border)';
+      b.style.background = active ? 'rgba(79,255,176,0.15)' : 'transparent';
+      b.style.color = active ? 'var(--accent)' : 'var(--muted)';
+    });
+  },
+
   toggleLang() {
     GS.lang = GS.lang === 'en' ? 'vi' : 'en';
     savePersist();
@@ -1022,7 +1105,15 @@ const Game = {
 
   // --- GUESS MODE ---
   setupGuess() {
-    const entry = DB[Math.floor(Math.random()*DB.length)];
+    let pool = DB;
+    const f = GS.wordLenFilter;
+    if (f !== 'any') {
+      const n = parseInt(f);
+      if (n === 9) pool = DB.filter(e => e.w.length >= 9);
+      else pool = DB.filter(e => e.w.length === n);
+      if (pool.length === 0) pool = DB; // fallback nếu không có từ nào
+    }
+    const entry = pool[Math.floor(Math.random()*pool.length)];
     GS.currentWord = entry;
     GS.wordLen = entry.w.length;
     GS.guesses = [];
@@ -1064,6 +1155,18 @@ const Game = {
   submitGuess(input) {
     if (input.length !== GS.wordLen) {
       showToast(`Must be ${GS.wordLen} letters!`, 'warning');
+      return false;
+    }
+    if (!/^[A-Z]+$/.test(input)) {
+      showToast('Letters only!', 'warning');
+      return false;
+    }
+    // Cho phép: từ trong DB hoặc trong VALID_WORDS
+    if (!VALID_WORDS.has(input) && input !== GS.currentWord.w) {
+      showToast(`"${input}" không có trong từ điển!`, 'error');
+      const inp = $('game-input');
+      inp.classList.add('shake');
+      setTimeout(() => inp.classList.remove('shake'), 400);
       return false;
     }
     GS.guesses.push(input);
